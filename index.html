@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6C63FF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Slip Expense - รวมค่าใช้จ่าย</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Dashboard View -->
+  <div id="view-dashboard" class="view active">
+    <header class="app-header">
+      <h1>Slip Expense</h1>
+      <p class="header-sub" id="currentMonth"></p>
+    </header>
+
+    <section class="summary-cards">
+      <div class="summary-card today">
+        <span class="card-label">วันนี้</span>
+        <span class="card-amount" id="todayTotal">฿0.00</span>
+      </div>
+      <div class="summary-card week">
+        <span class="card-label">สัปดาห์นี้</span>
+        <span class="card-amount" id="weekTotal">฿0.00</span>
+      </div>
+      <div class="summary-card month">
+        <span class="card-label">เดือนนี้</span>
+        <span class="card-amount" id="monthTotal">฿0.00</span>
+      </div>
+    </section>
+
+    <section class="recent-section">
+      <h2>รายการล่าสุด</h2>
+      <div id="recentList" class="transaction-list">
+        <div class="empty-state">ยังไม่มีรายการ<br>กด + เพื่อเพิ่มรายการใหม่</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Add Transaction View -->
+  <div id="view-add" class="view">
+    <header class="app-header">
+      <button class="btn-back" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>เพิ่มรายการ</h1>
+    </header>
+
+    <div class="add-tabs">
+      <button class="tab-btn active" data-tab="manual">กรอกเอง</button>
+      <button class="tab-btn" data-tab="scan">สแกน Slip</button>
+    </div>
+
+    <!-- Manual Input -->
+    <div id="tab-manual" class="tab-content active">
+      <form id="manualForm" class="form">
+        <div class="form-group">
+          <label>ประเภท</label>
+          <div class="type-toggle">
+            <button type="button" class="type-btn active" data-type="expense">รายจ่าย</button>
+            <button type="button" class="type-btn" data-type="income">รายรับ</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">จำนวนเงิน (฿)</label>
+          <input type="number" id="amount" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group">
+          <label for="category">หมวดหมู่</label>
+          <select id="category">
+            <option value="food">อาหาร</option>
+            <option value="transport">เดินทาง</option>
+            <option value="shopping">ช้อปปิ้ง</option>
+            <option value="bills">บิล/ค่าใช้จ่าย</option>
+            <option value="entertainment">บันเทิง</option>
+            <option value="health">สุขภาพ</option>
+            <option value="education">การศึกษา</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">รายละเอียด</label>
+          <input type="text" id="description" placeholder="เช่น ซื้อกับข้าว, ค่าน้ำมัน">
+        </div>
+
+        <div class="form-group">
+          <label for="date">วันที่</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <button type="submit" class="btn-primary">บันทึก</button>
+      </form>
+    </div>
+
+    <!-- Scan Slip -->
+    <div id="tab-scan" class="tab-content">
+      <div class="scan-area">
+        <div class="scan-placeholder" id="scanPlaceholder">
+          <div class="scan-icon">&#128247;</div>
+          <p>ถ่ายรูปหรือเลือกรูป Slip</p>
+          <p class="scan-hint">รองรับ PromptPay, โอนธนาคาร</p>
+        </div>
+        <img id="slipPreview" class="slip-preview hidden" alt="slip preview">
+        <div id="ocrLoading" class="ocr-loading hidden">
+          <div class="spinner"></div>
+          <p>กำลังอ่านข้อมูล...</p>
+        </div>
+        <div id="ocrResult" class="ocr-result hidden">
+          <h3>ข้อมูลที่อ่านได้</h3>
+          <div class="form-group">
+            <label>จำนวนเงิน (฿)</label>
+            <input type="number" id="ocrAmount" step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label>วันที่</label>
+            <input type="date" id="ocrDate">
+          </div>
+          <div class="form-group">
+            <label>ชื่อ/รายละเอียด</label>
+            <input type="text" id="ocrName" placeholder="ชื่อผู้รับ/จ่าย">
+          </div>
+          <div class="form-group">
+            <label>หมวดหมู่</label>
+            <select id="ocrCategory">
+              <option value="food">อาหาร</option>
+              <option value="transport">เดินทาง</option>
+              <option value="shopping">ช้อปปิ้ง</option>
+              <option value="bills">บิล/ค่าใช้จ่าย</option>
+              <option value="entertainment">บันเทิง</option>
+              <option value="health">สุขภาพ</option>
+              <option value="education">การศึกษา</option>
+              <option value="other">อื่นๆ</option>
+            </select>
+          </div>
+          <button class="btn-primary" id="btnSaveOcr">บันทึก</button>
+          <button class="btn-secondary" id="btnRescan">สแกนใหม่</button>
+        </div>
+      </div>
+      <input type="file" id="slipInput" accept="image/*" capture="environment" class="hidden">
+      <div class="scan-buttons" id="scanButtons">
+        <button class="btn-scan" id="btnCapture">
+          <span class="scan-btn-icon">&#128247;</span>
+          ถ่ายรูป
+        </button>
+        <button class="btn-scan" id="btnUpload">
+          <span class="scan-btn-icon">&#128193;</span>
+          เลือกรูป
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary View -->
+  <div id="view-summary" class="view">
+    <header class="app-header">
+      <h1>สรุปยอด</h1>
+    </header>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="thisMonth">เดือนนี้</button>
+      <button class="filter-btn" data-filter="lastMonth">เดือนก่อน</button>
+      <button class="filter-btn" data-filter="thisWeek">สัปดาห์นี้</button>
+      <button class="filter-btn" data-filter="all">ทั้งหมด</button>
+    </div>
+
+    <section class="total-section">
+      <div class="total-box">
+        <span class="total-label">รายจ่ายรวม</span>
+        <span class="total-amount expense" id="sumExpense">฿0.00</span>
+      </div>
+      <div class="total-box">
+        <span class="total-label">รายรับรวม</span>
+        <span class="total-amount income" id="sumIncome">฿0.00</span>
+      </div>
+    </section>
+
+    <section class="chart-section">
+      <h2>ตามหมวดหมู่</h2>
+      <div id="categoryChart" class="category-chart"></div>
+    </section>
+
+    <section class="all-transactions">
+      <div class="list-header">
+        <h2>รายการทั้งหมด</h2>
+        <span id="transactionCount" class="count-badge">0</span>
+      </div>
+      <div id="allTransactions" class="transaction-list">
+        <div class="empty-state">ยังไม่มีรายการ</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>หน้าหลัก</span>
+    </button>
+    <button class="nav-btn add-btn" data-view="add">
+      <svg viewBox="0 0 24 24" width="28" height="28"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </button>
+    <button class="nav-btn" data-view="summary">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      <span>สรุปยอด</span>
+    </button>
+  </nav>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>แก้ไขรายการ</h2>
+        <button class="modal-close" onclick="App.closeModal()">&times;</button>
+      </div>
+      <form id="editForm" class="form">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label>ประเภท</label>
+          <div class="type-toggle">
+            <button type="button" class="edit-type-btn type-btn" data-type="expense">รายจ่าย</button>
+            <button type="button" class="edit-type-btn type-btn" data-type="income">รายรับ</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>จำนวนเงิน (฿)</label>
+          <input type="number" id="editAmount" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>หมวดหมู่</label>
+          <select id="editCategory">
+            <option value="food">อาหาร</option>
+            <option value="transport">เดินทาง</option>
+            <option value="shopping">ช้อปปิ้ง</option>
+            <option value="bills">บิล/ค่าใช้จ่าย</option>
+            <option value="entertainment">บันเทิง</option>
+            <option value="health">สุขภาพ</option>
+            <option value="education">การศึกษา</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>รายละเอียด</label>
+          <input type="text" id="editDescription">
+        </div>
+        <div class="form-group">
+          <label>วันที่</label>
+          <input type="date" id="editDate" required>
+        </div>
+        <button type="submit" class="btn-primary">บันทึกการแก้ไข</button>
+        <button type="button" class="btn-danger" id="btnDelete">ลบรายการ</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
