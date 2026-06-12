@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#6C63FF">
+  <meta name="theme-color" content="#1D4ED8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Slip Expense - รวมค่าใช้จ่าย</title>
@@ -14,7 +14,16 @@
   <!-- Dashboard View -->
   <div id="view-dashboard" class="view active">
     <header class="app-header">
-      <h1>Slip Expense</h1>
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 40 48" width="36" height="43" fill="none">
+          <path d="M4 8C4 5.79 5.79 4 8 4H32C34.21 4 36 5.79 36 8V42L32 39L28 42L24 39L20 42L16 39L12 42L8 39L4 42V8Z" fill="white" fill-opacity="0.2" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M12 15H28" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M12 22H22" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M12 29H18" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <text x="26" y="32" font-size="12" font-weight="bold" fill="white" text-anchor="middle" opacity="0.9">฿</text>
+        </svg>
+        <span class="logo-text">Slip<span class="logo-accent">Expense</span></span>
+      </div>
       <p class="header-sub" id="currentMonth"></p>
     </header>
 
