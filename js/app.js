@@ -284,6 +284,7 @@ const App = (() => {
   function renderSummary() {
     let transactions;
     switch (currentFilter) {
+      case 'today': transactions = Storage.getToday(); break;
       case 'thisMonth': transactions = Storage.getThisMonth(); break;
       case 'lastMonth': transactions = Storage.getLastMonth(); break;
       case 'thisWeek': transactions = Storage.getThisWeek(); break;
