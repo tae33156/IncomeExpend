@@ -45,8 +45,7 @@ body {
 }
 
 .view.active {
-  display: flex;
-  flex-direction: column;
+  display: block;
 }
 
 /* === Header === */
