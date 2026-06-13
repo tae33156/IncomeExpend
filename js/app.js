@@ -11,7 +11,7 @@ const App = (() => {
   };
 
   let currentView = 'dashboard';
-  let currentFilter = 'thisMonth';
+  let currentFilter = 'today';
   let editingType = 'expense';
 
   function init() {
