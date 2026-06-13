@@ -522,9 +522,14 @@ body {
 .filter-bar {
   display: flex;
   gap: 8px;
-  padding: 16px;
+  padding: 12px 16px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
 }
 
 .filter-btn {
